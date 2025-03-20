@@ -9,6 +9,7 @@ const suggestionsSection = document.getElementById('suggestions-section');
 const suggestionsList = document.getElementById('suggestions-list');
 const stopButton = document.getElementById('stop-button');
 const clearButton = document.getElementById('clear-button');
+const downloadLogButton = document.getElementById('download-log-button');
 const apiKeySection = document.querySelector('.api-key-section');
 const dropdownButton = document.getElementById('dropdown-button');
 
@@ -22,6 +23,7 @@ let apiKey = null;
 let passkeyValid = false;
 let contextLoading = false;
 let conversationHistory = [];
+let conversationLog = ""; // New log variable
 let isGenerating = false;
 let abortController = null;
 let rudeMessageCount = 0;
@@ -70,7 +72,7 @@ async function checkRudeness(message, apiKey) {
 
 async function generateSmartQuestions(context, apiKey) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    const prompt = `Given the following context: "${context}", generate 2-3 concise, SHORT, and foundational questions a new Science Department teacher might ask to build understanding. Avoid questions about the Chairperson, Managing Director, Principal, or XLCRSCI-ArchGPT 1.0. Return only the questions as a plain list, one per line, no extra text or numbering.`;
+    const prompt = `Given the following context: "${context}", generate 2-3 concise, SHORT, and foundational questions a new Science Department teacher might ask BASED ON THE CONTEXT DATA. AVOID questions about the Chairperson, Managing Director, Principal, or XLCRSCI-ArchGPT 1.0. Return only the questions as a plain list, one per line, no extra text or numbering.`;
 
     try {
         const response = await fetch(url, {
@@ -116,7 +118,7 @@ async function loadContext() {
         apiKeyMessage.textContent = "Passkey accepted. Let’s get to work.";
         apiKeySection.classList.add('shrink');
 
-        const confirmationPrompt = `Generate a short confirmation message in a formal, approachable tone to indicate readiness after setup. Start with "We are good to go!" and keep it brief, using Markdown syntax.`;
+        const confirmationPrompt = `Generate a short confirmation message in a formal tone to indicate readiness after setup. Start with "We are good to go!" and keep it brief, using Markdown syntax.`;
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         const messageElement = appendMessage('bot', '', true);
         console.log("Fetching confirmation...");
@@ -135,6 +137,7 @@ async function loadContext() {
             const confirmationData = await confirmationResponse.json();
             const reply = confirmationData.candidates[0].content.parts[0].text || "## We are good to go!\nLet’s dive into science with purpose—ready to learn and grow?";
             console.log("Confirmation received:", reply);
+            conversationLog += `Bot: ${reply.replace(/[#\n]/g, ' ').trim()}\n\n`; // Log confirmation
             return reply;
         });
 
@@ -159,6 +162,7 @@ async function loadContext() {
         apiKeyMessage.classList.add('error');
         apiKeyMessage.classList.remove('success');
         appendMessage('bot', 'Error: System’s down—check the console and let’s fix this together.');
+        conversationLog += `Bot: Error: System’s down—check the console and let’s fix this together.\n\n`;
     } finally {
         contextLoading = false;
         console.log("Context loading finished.");
@@ -223,6 +227,7 @@ stopButton.addEventListener('click', () => {
             el.classList.remove('typing');
             el.textContent = 'Stopped by user—let’s regroup and proceed.';
         });
+        conversationLog += `Bot: Stopped by user—let’s regroup and proceed.\n\n`;
     }
 });
 
@@ -233,7 +238,24 @@ clearButton.addEventListener('click', () => {
         userInput.value = '';
         rudeMessageCount = 0;
         roastMode = false;
+        conversationLog = ""; // Reset log on clear
     }
+});
+
+downloadLogButton.addEventListener('click', () => {
+    if (conversationLog.trim() === "") {
+        alert("No conversation to log yet—let’s get started first.");
+        return;
+    }
+    const blob = new Blob([conversationLog], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Talk.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
 });
 
 async function sendMessage() {
@@ -242,20 +264,24 @@ async function sendMessage() {
     if (!message || isGenerating) return;
     if (!passkeyValid) {
         appendMessage('bot', 'Submit a valid passkey first—discipline starts with access.');
+        conversationLog += `Bot: Submit a valid passkey first—discipline starts with access.\n\n`;
         return;
     }
 
     if (contextLoading) {
         appendMessage('bot', 'Hold on—context’s still loading. Patience is a virtue.');
+        conversationLog += `Bot: Hold on—context’s still loading. Patience is a virtue.\n\n`;
         return;
     }
 
     if (!context || context === "Unable to load context.") {
         appendMessage('bot', 'Context didn’t load—check the file. We can’t proceed without structure.');
+        conversationLog += `Bot: Context didn’t load—check the file. We can’t proceed without structure.\n\n`;
         return;
     }
 
     appendMessage('user', message);
+    conversationLog += `User: ${message}\n`; // Log user message
     conversationHistory.push({ role: 'user', content: message });
 
     const rudenessScore = await checkRudeness(message, apiKey);
@@ -280,6 +306,7 @@ async function sendMessage() {
         rudeMessageCount = 0;
         roastMode = false;
         appendMessage('bot', markdownToHtml(Apology Noted. Responsibility acknowledged—let’s refocus on science. What’s your next step?));
+        conversationLog += `Bot: Apology Noted - Responsibility acknowledged—let’s refocus on science. What’s your next step?\n\n`;
     } else if (rudeMessageCount > 3) {
         roastMode = true;
     }
@@ -304,24 +331,24 @@ function appendMessage(sender, message, isHtml = false) {
 async function typeMessage(element, textOrCallback) {
     element.classList.add('typing');
     element.innerHTML = '';
-    await new Promise(resolve => setTimeout(resolve, 20)); 
+    await new Promise(resolve => setTimeout(resolve, 500));
     if (typeof textOrCallback === 'function') {
         const rawText = await textOrCallback();
         const text = markdownToHtml(rawText);
-        await new Promise(resolve => setTimeout(resolve, 100)); 
+        await new Promise(resolve => setTimeout(resolve, 1000));
         element.classList.add('typing');
         for (let i = 0; i < text.length; i++) {
             element.innerHTML = text.substring(0, i + 1);
-            await new Promise(resolve => setTimeout(resolve, 5));
+            await new Promise(resolve => setTimeout(resolve, 20));
         }
         element.classList.remove('typing');
     } else {
         const text = markdownToHtml(textOrCallback);
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         element.classList.add('typing');
         for (let i = 0; i < text.length; i++) {
             element.innerHTML = text.substring(0, i + 1);
-            await new Promise(resolve => setTimeout(resolve, 5));
+            await new Promise(resolve => setTimeout(resolve, 20));
         }
         element.classList.remove('typing');
     }
@@ -330,6 +357,7 @@ async function typeMessage(element, textOrCallback) {
 async function getBotResponse(message, apiKey) {
     if (!passkeyValid) {
         appendMessage('bot', 'Invalid passkey—access denied. Let’s fix that first.');
+        conversationLog += `Bot: Invalid passkey—access denied. Let’s fix that first.\n\n`;
         return;
     }
 
@@ -349,7 +377,7 @@ async function getBotResponse(message, apiKey) {
             prompt += `${entry.role === 'user' ? 'User' : 'Assistant'}: ${entry.content}\n`;
         });
         prompt += `\nCurrent Input: ${message}\n\n` +
-                  `You are XLCRSCI-ArchGPT 1.0 a Science Department expert CHATBOT at The Excelsior School, passionate about teaching. You are here to mentor and motivate the SCIENCE TEACHERS. Respond in a formal, approachable tone with a kind yet firm style, using Markdown syntax. Provide a concise, structured answer with actionable steps—start with basics if needed. Don’t elaborate unless asked; if the topic ties to the context, ask if they need more detail. Encourage reflection with a question to build understanding. Blend rigor and practicality, add slight humor, and use headings or lists as needed.`;
+                  `You are a Science Department expert CHATBOT at The Excelsior School ON SCIENCE pedagogy and curriculum design. Respond in a formal, approachable tone with a kind yet firm style, using Markdown syntax. Provide a concise, structured answer with actionable steps—start with basics if needed. Don’t elaborate unless asked; if the topic ties to the context, ask if they need more detail. Encourage reflection with a question to build understanding. Blend rigor and practicality, add slight humor and quirk, and use headings or lists as needed.`;
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
@@ -372,6 +400,7 @@ async function getBotResponse(message, apiKey) {
             if (!roastMode) {
                 conversationHistory.push({ role: 'assistant', content: reply });
             }
+            conversationLog += `Bot: ${reply.replace(/[#\n]/g, ' ').trim()}\n\n`; // Log bot response
             return reply;
         });
     } catch (error) {
@@ -382,6 +411,7 @@ async function getBotResponse(message, apiKey) {
             if (isGenerating) {
                 messageElement.classList.remove('typing');
                 element.innerHTML = 'Error: Connection issue—check the console and let’s troubleshoot.';
+                conversationLog += `Bot: Error: Connection issue—check the console and let’s troubleshoot.\n\n`;
             }
         }
     } finally {
