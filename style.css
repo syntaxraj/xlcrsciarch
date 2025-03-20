@@ -370,6 +370,15 @@ body {
     background: #2d2d2d;
 }
 
+#download-log-button {
+    background: #404040;
+    color: #fff;
+}
+
+#download-log-button:hover {
+    background: #2d2d2d;
+}
+
 .chat-window::-webkit-scrollbar {
     width: 8px;
 }
