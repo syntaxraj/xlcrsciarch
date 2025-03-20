@@ -44,8 +44,8 @@ body {
 }
 
 .logo {
-    max-height: 500px;
-    max-width: 500px;
+    max-height: 50px;
+    max-width: 100px;
     object-fit: contain;
     margin-top: 20px;
 }
@@ -193,13 +193,11 @@ body {
 .api-key-inputs {
     display: flex;
     gap: 10px;
-    justify-content: center; /* Center passkey and button */
     flex: 1;
 }
 
-#passkey {
+#api-key, #passkey {
     flex: 1;
-    max-width: 300px; /* Limit width for better look */
     padding: 10px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
@@ -208,7 +206,7 @@ body {
     transition: border-color 0.3s;
 }
 
-#passkey:focus {
+#api-key:focus, #passkey:focus {
     border-color: #404040;
 }
 
@@ -288,20 +286,19 @@ body {
 }
 
 .message.bot.typing::before {
-    content: "◇";
+    content: "▋";
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 8px;
+    height: 1em;
+    background: #a0aec0;
+    border-radius: 2px;
+    animation: blink 0.8s infinite;
     margin-right: 5px;
     vertical-align: middle;
-    font-size: 16px;
-    color: #a0aec0;
-    animation: spinDiamond 1s infinite linear;
 }
 
-@keyframes spinDiamond {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+@keyframes blink {
+    50% { opacity: 0; }
 }
 
 .input-section {
@@ -367,15 +364,6 @@ body {
 }
 
 #clear-button:hover {
-    background: #2d2d2d;
-}
-
-#download-log-button {
-    background: #404040;
-    color: #fff;
-}
-
-#download-log-button:hover {
     background: #2d2d2d;
 }
 
