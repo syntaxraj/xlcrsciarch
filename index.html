@@ -12,7 +12,7 @@
     <div class="app-container">
         <header class="sidebar">
             <div class="sidebar-content">
-                <img src="logo.png" alt="Logo" id="logo" class="logo" height="180" width="180">
+                <img src="logo.png" alt="Logo" id="logo" class="logo" height="60" width="120">
                 <div class="suggestions-section" id="suggestions-section">
                     <h3>Suggested Questions</h3>
                     <ul id="suggestions-list"></ul>
@@ -27,14 +27,16 @@
                 <h1>XLCRSCI-ArchGPT 1.0</h1>
             </div>
             <div class="api-key-section">
-                <button id="dropdown-button">▼ Status</button>
+                <button id="dropdown-button">▼ API Status</button>
                 <div class="api-key-content">
                     <div class="api-key-inputs">
+                        <input type="password" id="api-key" placeholder="Enter your API Key">
                         <input type="password" id="passkey" placeholder="Enter Department Passkey">
                         <button id="submit-api-key">Submit</button>
                     </div>
                     <span id="api-key-message"></span>
-                                    </div>
+                    <a href="https://console.cloud.google.com/" target="_blank" class="api-link">Click here to get your API key</a>
+                </div>
             </div>
             <div class="chat-window" id="chat-window"></div>
             <div class="input-section">
@@ -42,11 +44,10 @@
                 <button id="send-button">Send</button>
                 <button id="stop-button">Stop</button>
                 <button id="clear-button">Clear</button>
-                <button id="download-log-button">Download Log</button>
             </div>
         </main>
     </div>
-    <footer class="footer">Created by Rajat © 2025</footer>
+    <footer class="footer">Created by Rajat Thapa © 2025</footer>
     <script src="script.js"></script>
 </body>
 </html>
