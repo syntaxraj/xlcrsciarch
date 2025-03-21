@@ -46,7 +46,7 @@ async function fetchAPI(url, body, signal) {
 }
 
 async function generateSmartQuestions(apiKey) {
-    const prompt = `Given the following context: "${state.context}", generate 2-4 concise, simple and short relevant questions using less than 15 words that a new teacher in the Science Department might ask based on the given context.NO LOCATION BASED QUESTIONS. Do NOT suggest any questions about the administrators and XLCRSCI-ArchGPT 1.0. Return only the questions as a plain list, one per line, with no extra text or numbering.`;
+    const prompt = `Given the following context: "${state.context}", generate 2-4 concise, simple and short relevant questions using less than 15 words that a new teacher in the Science Department might ask based about Teaching science at The Excelsior School on the given context.NO LOCATION BASED QUESTIONS. Do NOT suggest any questions about the administrators and XLCRSCI-ArchGPT 1.0. Return only the questions as a plain list, one per line, with no extra text or numbering.`;
     try {
         return (await fetchAPI(`${API_URL}?key=${apiKey}`, { contents: [{ parts: [{ text: prompt }] }] }))
             .split('\n')
