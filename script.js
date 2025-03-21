@@ -46,7 +46,7 @@ async function fetchAPI(url, body, signal) {
 }
 
 async function generateSmartQuestions(apiKey) {
-    const prompt = `Given the following context: "${state.context}", generate 2-3 concise, simple and basic relevant questions that a new teacher in the Science Department might ask based on the given context. Do NOT suggest any questions about the Chairperson, the Managing director, the Principal and XLCRSCI-ArchGPT 1.0. Return only the questions as a plain list, one per line, with no extra text or numbering.`;
+    const prompt = `Given the following context: "${state.context}", generate 2-3 concise, simple and short relevant questions that a new teacher in the Science Department might ask based on the given context. Do NOT suggest any questions about the Chairperson, the Managing director, the Principal and XLCRSCI-ArchGPT 1.0. Return only the questions as a plain list, one per line, with no extra text or numbering.`;
     try {
         return (await fetchAPI(`${API_URL}?key=${apiKey}`, { contents: [{ parts: [{ text: prompt }] }] }))
             .split('\n')
@@ -180,7 +180,7 @@ async function getBotResponse(message) {
     elements.stopButton.style.display = 'inline-block';
     state.abortController = new AbortController();
 
-    const prompt = `Context: ${state.context}\n\nConversation History:\n${state.conversationHistory.map(entry => `${entry.role === 'user' ? 'User' : 'Assistant'}: ${entry.content}`).join('\n')}\n\nCurrent Question: ${message}\n\nYou are an expert of Science curriculum and pedagogy at The Excelsior School and you are a mentor and motivator for the science teachers. Provide a well-formatted answer UNDER 200 WORDS using Markdown syntax.YOU CAN ALSO USE EMOJIS APPROPRIATELY.ELABORATE ONLY WHEN ASKED FOR. Keep the tone kind, formal and encouraging, with slight quirky humour. Use headings, bullet points, numbered lists, and other formatting for clarity.`;
+    const prompt = `Context: ${state.context}\n\nConversation History:\n${state.conversationHistory.map(entry => `${entry.role === 'user' ? 'User' : 'Assistant'}: ${entry.content}`).join('\n')}\n\nCurrent Question: ${message}\n\nYou are an expert of Science curriculum and pedagogy at The Excelsior School and you are a mentor and motivator for the science teachers. Provide a well-formatted answer UNDER 200 WORDS using Markdown syntax.ELABORATE ONLY WHEN ASKED FOR. Keep the tone kind, formal and encouraging, with very slight humour. Use headings, bullet points, numbered lists, and other formatting for clarity.`;
     const messageElement = appendMessage('bot', '', true);
 
     try {
