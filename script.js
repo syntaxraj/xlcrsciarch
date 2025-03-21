@@ -69,7 +69,7 @@ async function loadContext(apiKey) {
         elements.passkeyMessage.textContent = "Passkey accepted. Ready to chat.";
         elements.apiKeySection.classList.add('shrink');
 
-        const confirmationPrompt = `Generate a short confirmation message in a formal yet quirky tone to indicate that the system is ready after a successful setup. Start with "We are good to go!" and keep it brief, using Markdown syntax.`;
+        const confirmationPrompt = `Generate a short confirmation message in a formal tone to indicate that the system is ready after a successful setup. Start with "We are good to go!" and keep it brief, using Markdown syntax.`;
         const confirmationMessage = markdownToHtml(await fetchAPI(`${API_URL}?key=${apiKey}`, { contents: [{ parts: [{ text: confirmationPrompt }] }] }));
         appendMessage('bot', confirmationMessage, true);
 
