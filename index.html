@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XLCRSCI-ArchGPT 1.0</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css" media="screen">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 </head>
 <body>
     <div class="app-container">
         <header class="sidebar">
             <div class="sidebar-content">
-                <img src="logo.png" alt="Logo" id="logo" class="logo" height="60" width="120">
+                <img src="logo.png" alt="Logo" id="logo" class="logo" height="180" width="180" loading="lazy">
                 <div class="suggestions-section" id="suggestions-section">
                     <h3>Suggested Questions</h3>
                     <ul id="suggestions-list"></ul>
@@ -27,27 +29,25 @@
                 <h1>XLCRSCI-ArchGPT 1.0</h1>
             </div>
             <div class="api-key-section">
-                <button id="dropdown-button">▼ API Status</button>
+                <button id="dropdown-button" aria-label="Toggle Passkey Status">▼ Passkey Status</button>
                 <div class="api-key-content">
                     <div class="api-key-inputs">
-                        <input type="password" id="api-key" placeholder="Enter your API Key">
-                        <input type="password" id="passkey" placeholder="Enter Department Passkey">
-                        <button id="submit-api-key">Submit</button>
+                        <input type="password" id="passkey" placeholder="Enter Department Passkey" autocomplete="off">
+                        <button id="submit-passkey">Submit</button>
                     </div>
-                    <span id="api-key-message"></span>
-                    <a href="https://console.cloud.google.com/" target="_blank" class="api-link">Click here to get your API key</a>
+                    <span id="passkey-message"></span>
                 </div>
             </div>
-            <div class="chat-window" id="chat-window"></div>
+            <div class="chat-window" id="chat-window" role="log" aria-live="polite"></div>
             <div class="input-section">
-                <input type="text" id="user-input" placeholder="Type your message...">
+                <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
                 <button id="send-button">Send</button>
                 <button id="stop-button">Stop</button>
                 <button id="clear-button">Clear</button>
             </div>
         </main>
     </div>
-    <footer class="footer">Created by Rajat Thapa © 2025</footer>
-    <script src="script.js"></script>
+    <footer class="footer">Created by Rajat © 2025</footer>
+    <script src="script.js" defer></script>
 </body>
 </html>
