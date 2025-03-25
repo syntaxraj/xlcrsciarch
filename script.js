@@ -180,7 +180,7 @@ async function getBotResponse(message) {
     elements.stopButton.style.display = 'inline-block';
     state.abortController = new AbortController();
 
-    const prompt = `Context: ${state.context}\n\nConversation History:\n${state.conversationHistory.map(entry => `${entry.role === 'user' ? 'User' : 'Assistant'}: ${entry.content}`).join('\n')}\n\nCurrent Question: ${message}\n\nYou are an expert of Science curriculum and pedagogy at The Excelsior School and you are a mentor and motivator for the science teachers. Provide a well-formatted answer using Markdown syntax.ELABORATE ACCORDING TO THE NATURE OF THE QUESTION ASKED. Keep the tone formal and encouraging, with very slight humour. Use headings, bullet points, numbered lists, and other formatting for clarity.`;
+    const prompt = `Context: ${state.context}\n\nConversation History:\n${state.conversationHistory.map(entry => `${entry.role === 'user' ? 'User' : 'Assistant'}: ${entry.content}`).join('\n')}\n\nCurrent Question: ${message}\n\nYou are an expert of Science curriculum and pedagogy at The Excelsior School. You are an assistant and motivator for the science teachers. Provide a well-formatted answer using Markdown syntax.ELABORATE ACCORDING TO THE NATURE OF THE QUESTION ASKED. Keep the tone formal and encouraging, with very slight humour. Use headings, bullet points, numbered lists, and other formatting for clarity.`;
     const messageElement = appendMessage('bot', '', true);
 
     try {
